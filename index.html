@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PASSAPU - Penerjemah Bahasa Konjo ke Indonesia</title>
+  <meta name="description" content="Terjemahkan bahasa Konjo ke bahasa Indonesia dengan cepat dan mudah.">
+  <link rel="icon" href="assets/passapu.png" type="image/png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="stage">
+
+    <!-- Tampilan 1: Beranda -->
+    <section class="phone phone--hero" id="beranda" aria-label="Beranda">
+      <a class="brand" href="#">
+        <span class="brand__mark"><img class="logo" src="assets/passapu.png" alt="Logo PASSAPU"></span>
+        <span class="brand__name"><strong>PASSAPU</strong></span>
+      </a>
+
+      <h1 class="hero__title">Penerjemah<br>Bahasa Konjo<br>ke Indonesia</h1>
+      <p class="hero__lead">Pahami bahasa daerah dengan <strong>jelas</strong>.</p>
+
+      <div class="hero__cards">
+        <div class="mini mini--ring">
+          <p class="mini__label">Terjemah<br>Cepat</p>
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#ee7b5f" stroke-width="14" stroke-dasharray="230 315" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="30" fill="none" stroke="#f4b26f" stroke-width="12" stroke-dasharray="120 189" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="12" fill="#15171c"/>
+            <path d="M60 54v12M54 60h12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mini mini--count">
+          <p class="mini__number"><span id="heroCount">0</span><sup>+</sup></p>
+          <p class="mini__caption">kata &amp; frasa<br>sudah tersedia!</p>
+          <div class="chips">
+            <span class="chip chip--a">KJ</span><span class="chip chip--b">ID</span><span class="chip chip--c">&rarr;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__art" aria-hidden="true">
+        <svg viewBox="0 0 360 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ee7b5f"/><stop offset="1" stop-color="#f6b9a0"/>
+            </linearGradient>
+            <linearGradient id="gB" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#f4b26f"/><stop offset="1" stop-color="#f3dca6"/>
+            </linearGradient>
+          </defs>
+          <path d="M-10 210 C-10 90 40 40 110 40 C190 40 230 110 230 210 L170 210 C170 150 150 112 112 112 C72 112 52 150 52 210 Z" fill="url(#gA)"/>
+          <path d="M120 210 C120 130 160 70 220 70 C290 70 330 120 330 210 Z" fill="url(#gB)" opacity="0.95"/>
+          <circle cx="352" cy="150" r="52" fill="#a9b6ea"/>
+        </svg>
+      </div>
+      <div class="start">
+        <a class="btn btn--dark" href="#penerjemah">MULAI <span aria-hidden="true">&#8593;</span></a>
+      </div>
+    </section>
+
+    <!-- Tampilan 2: Penerjemah -->
+    <section class="phone phone--app" id="penerjemah" aria-label="Penerjemah" hidden>
+      <header class="topbar">
+        <a class="brand__mark brand__mark--sm" href="#" aria-label="Kembali ke beranda"><img class="logo" src="assets/passapu.png" alt="Logo PASSAPU"></a>
+        <span class="topbar__title"><strong>PASSAPU</strong></span>
+        <span class="topbar__menu" aria-hidden="true"><i></i><i></i></span>
+      </header>
+
+      <!-- Panel: Terjemah -->
+      <div class="pane" id="pane-translate">
+        <div class="banner">
+          <div class="banner__text">
+            <span class="tag">TERJEMAH</span>
+            <h2>BAHASA KONJO<br>KE INDONESIA</h2>
+            <p>Bulukumba</p>
+          </div>
+          <img class="banner__logo" src="assets/passapu.png" alt="">
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <label class="panel__title" id="panelTitle" for="inputText">TEKS KONJO</label>
+            <span class="panel__dots" aria-hidden="true"></span>
+            <button class="swap" id="btnSwap" type="button" title="Tukar arah terjemahan" aria-label="Tukar arah terjemahan">KJ &rarr; ID</button>
+          </div>
+          <textarea id="inputText" rows="3" placeholder="Contoh: Apa kareba? Nakke lampa ri bola." spellcheck="false"></textarea>
+
+          <div class="actions" role="group" aria-label="Aksi">
+            <button class="icon-btn" id="btnTranslate" type="button" title="Terjemahkan" aria-label="Terjemahkan">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button class="icon-btn" id="btnCopy" type="button" title="Salin hasil" aria-label="Salin hasil">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+            </button>
+            <button class="icon-btn" id="btnSample" type="button" title="Contoh kalimat" aria-label="Contoh kalimat">
+              <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
+            </button>
+            <button class="icon-btn" id="btnClear" type="button" title="Bersihkan" aria-label="Bersihkan">
+              <svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <h3 class="section-title">HASIL TERJEMAHAN</h3>
+        <div class="result" id="resultBox" aria-live="polite">
+          <p class="result__empty">Terjemahan akan muncul di sini.</p>
+        </div>
+
+        <h3 class="section-title">RINCIAN KATA</h3>
+        <ul class="list" id="breakdown">
+          <li class="list__empty">Belum ada kata.</li>
+        </ul>
+      </div>
+
+      <!-- Panel: Statistik -->
+      <div class="pane" id="pane-stats" hidden>
+        <div class="block-head">
+          <h3 class="section-title">KAMUS KONJO</h3>
+          <span class="pill">Ringkasan</span>
+        </div>
+        <div class="venn">
+          <div class="venn__circle venn__circle--a"><b id="statWords">0</b></div>
+          <div class="venn__circle venn__circle--b"><b id="statPhrases">0</b></div>
+          <div class="venn__circle venn__circle--c"><b id="statCount">0</b></div>
+          <ul class="legend">
+            <li><i class="dot dot--b"></i>Kata</li>
+            <li><i class="dot dot--c"></i>Frasa</li>
+            <li><i class="dot dot--a"></i>Terjemahan</li>
+          </ul>
+        </div>
+
+        <div class="block-head">
+          <h3 class="section-title">KATA PER KATEGORI</h3>
+          <span class="pill">Kamus</span>
+        </div>
+        <div class="bars" id="bars" role="img" aria-label="Grafik jumlah kata per kategori"></div>
+
+        <div class="figures">
+          <div><strong id="figCount">0</strong><span>Total<br>Terjemahan</span></div>
+          <hr>
+          <div><strong id="figRate">0%</strong><span>Kata<br>Dikenali</span></div>
+        </div>
+
+        <h3 class="section-title">RIWAYAT</h3>
+        <ul class="list list--history" id="history">
+          <li class="list__empty">Belum ada riwayat.</li>
+        </ul>
+      </div>
+
+      <!-- Panel: Peta Kajang -->
+      <div class="pane" id="pane-map" hidden>
+        <div class="block-head">
+          <h3 class="section-title">WILAYAH KAJANG</h3>
+          <span class="pill">Bulukumba</span>
+        </div>
+        <figure class="map" id="mapBox">
+          <img id="mapImg" src="assets/kajang.png" alt="Peta wilayah Kajang, Kabupaten Bulukumba, dengan batas bergaris merah putih">
+          <iframe id="mapEmbed" title="Peta Kajang, Bulukumba" hidden loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Kajang,+Bulukumba+Regency,+South+Sulawesi&amp;t=k&amp;z=11&amp;output=embed"></iframe>
+        </figure>
+        <p class="about">Wilayah adat Ammatoa, Kajang, Kabupaten Bulukumba, Sulawesi Selatan. Batas wilayah ditandai garis merah-putih.</p>
+        <div class="map-actions">
+          <button style="display: none;" class="btn btn--light" id="btnRegion" type="button" aria-pressed="false">WILAYAH SAJA</button>
+          <a class="btn btn--dark" href="https://www.google.com/maps/place/Kajang,+Bulukumba+Regency,+South+Sulawesi/@-5.339231,120.2473342,27177m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2dbc1a6e53444d13:0x4030bfbcaf77750!8m2!3d-5.3327596!4d120.3644563!16s%2Fm%2F07kglds!5m2!1e2!1e4?entry=ttu&amp;g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">GOOGLE MAPS &#8599;</a>
+        </div>
+      </div>
+
+      <!-- Panel: Tentang -->
+      <div class="pane" id="pane-about" hidden>
+        <h3 class="section-title">TENTANG PASSAPU</h3>
+        <p class="about">Penerjemah bahasa Konjo ke bahasa Indonesia berbasis kamus dasar. Kata yang belum dikenal ditandai merah pada hasil terjemahan.</p>
+      </div>
+
+      <nav class="nav" aria-label="Navigasi">
+        <button class="nav__btn is-active" type="button" data-pane="pane-translate" aria-label="Terjemah">
+          <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>
+        </button>
+        <button class="nav__btn" type="button" data-pane="pane-stats" aria-label="Statistik">
+          <svg viewBox="0 0 24 24"><path d="M6 20V12M12 20V5M18 20v-5"/></svg>
+        </button>
+        <button class="nav__btn" type="button" data-pane="pane-map" aria-label="Peta Kajang">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>
+        </button>
+        <button class="nav__btn" type="button" data-pane="pane-about" aria-label="Tentang">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        </button>
+      </nav>
+    </section>
+
+  </main>
+
+  <script src="js/dictionary.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
