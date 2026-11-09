@@ -5,18 +5,18 @@ window.KONJO_DICT = {
   words: [
     // Kata ganti
     { k: "nakke", i: "saya", c: "Ganti" },
-    { k: "ikau", i: "kamu", c: "Ganti" },
+    { k: "kau", i: "kamu", c: "Ganti" },
     { k: "ia", i: "dia", c: "Ganti" },
     { k: "ikambe", i: "kami", c: "Ganti" },
-    { k: "ikatte", i: "kita", c: "Ganti" },
-    { k: "anne", i: "ini", c: "Ganti" },
-    { k: "anjo", i: "itu", c: "Ganti" },
+    { k: "nakke", i: "kita", c: "Ganti" },
+    { k: "inni", i: "ini", c: "Ganti" },
+    { k: "injo", i: "itu", c: "Ganti" },
     { k: "inai", i: "siapa", c: "Ganti" },
     { k: "apa", i: "apa", c: "Ganti" },
 
     // Benda
     { k: "bola", i: "rumah", c: "Benda" },
-    { k: "je'ne'", i: "air", c: "Benda" },
+    { k: "ere", i: "air", c: "Benda" },
     { k: "ana'", i: "anak", c: "Benda" },
     { k: "ambo'", i: "ayah", c: "Benda" },
     { k: "indo'", i: "ibu", c: "Benda" },

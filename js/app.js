@@ -4,6 +4,14 @@
   var DICT = window.KONJO_DICT;
   var STORE_KEY = "passapu.v1";
 
+  // Laporan kata baru dikirim ke email admin lewat FormSubmit (formsubmit.co, tanpa server).
+  // Laporan pertama memicu email aktivasi; setelah aktif, ganti alamat email di URL ini dengan
+  // kode acak dari FormSubmit agar alamat email tidak terlihat di kode website.
+  var REPORT_URL = "https://formsubmit.co/ajax/105841103923@student.unismuh.ac.id";
+  var REPORT_MAX_WORDS = 10;
+  var REPORT_TIMEOUT_MS = 15000;
+  var REPORT_KEPT = 200;
+
   var norm = function (s) {
     return s.toLowerCase().replace(/['’‘`´]/g, "").replace(/\s+/g, " ").trim();
   };
@@ -29,11 +37,13 @@
   var LABELS = {
     "kj-id": {
       from: "Konjo", avatar: "K", tag: "KJ \u2192 ID", panel: "TEKS KONJO",
-      placeholder: "Contoh: Apa kareba? Nakke lampa ri bola."
+      placeholder: "Contoh: Apa kareba? Nakke lampa ri bola.",
+      route: "Konjo ke Indonesia", note: "Artinya dalam bahasa Indonesia (opsional)"
     },
     "id-kj": {
       from: "Indonesia", avatar: "I", tag: "ID \u2192 KJ", panel: "TEKS INDONESIA",
-      placeholder: "Contoh: Apa kabar? Saya makan ikan."
+      placeholder: "Contoh: Apa kabar? Saya makan ikan.",
+      route: "Indonesia ke Konjo", note: "Padanan dalam bahasa Konjo (opsional)"
     }
   };
 
@@ -42,20 +52,27 @@
     input: $("inputText"), result: $("resultBox"), breakdown: $("breakdown"),
     history: $("history"), bars: $("bars"),
     btnTranslate: $("btnTranslate"), btnCopy: $("btnCopy"),
-    btnSample: $("btnSample"), btnClear: $("btnClear")
+    btnSample: $("btnSample"), btnClear: $("btnClear"),
+    report: $("reportBox"), reportTitle: $("reportTitle"), reportWords: $("reportWords"),
+    reportForm: $("reportForm"), reportNoteLabel: $("reportNoteLabel"), reportNote: $("reportNote"),
+    btnReport: $("btnReport"), reportStatus: $("reportStatus")
   };
 
   var state = loadState();
   var lastOutput = "";
   var sampleIndex = 0;
   var dir = "kj-id";
+  var reportBusy = false;
 
   function loadState() {
     try {
       var s = JSON.parse(localStorage.getItem(STORE_KEY));
-      if (s && Array.isArray(s.history)) return s;
+      if (s && Array.isArray(s.history)) {
+        if (!Array.isArray(s.reported)) s.reported = [];
+        return s;
+      }
     } catch (e) { /* abaikan */ }
-    return { count: 0, rate: 0, history: [] };
+    return { count: 0, rate: 0, history: [], reported: [] };
   }
 
   function saveState() {
@@ -226,6 +243,100 @@
     $("figRate").textContent = (state.rate || 0) + "%";
   }
 
+  function reportKey(word) { return dir + ":" + norm(word); }
+  function cleanWord(word) { return word.toLowerCase().replace(/[’‘`´]/g, "'"); }
+
+  // Baris siap tempel untuk dictionary.js; kata ditaruh pada sisi bahasa yang belum punya padanan.
+  function dictLine(word) {
+    return dir === "kj-id"
+      ? '{ k: "' + word + '", i: "", c: "Lainnya" },'
+      : '{ k: "", i: "' + word + '", c: "Lainnya" },';
+  }
+
+  function missingWords(r) {
+    return r.pairs.filter(function (p) { return !p.ok; }).map(function (p) {
+      var key = reportKey(p.src);
+      return { word: cleanWord(p.src), key: key, sent: state.reported.indexOf(key) !== -1 };
+    });
+  }
+
+  function renderReport(r, hasText) {
+    if (reportBusy) return;
+    var missing = hasText ? missingWords(r) : [];
+    el.report.hidden = !missing.length;
+    if (!missing.length) return;
+
+    var fresh = missing.filter(function (m) { return !m.sent; });
+    var pending = fresh.length > 0;
+    var shown = (pending ? fresh : missing).map(function (m) { return m.word; });
+    var more = shown.length - REPORT_MAX_WORDS;
+
+    el.reportTitle.textContent = pending ? shown.length + " kata belum ada di kamus" : "Sudah dilaporkan ke admin";
+    el.reportWords.textContent = shown.slice(0, REPORT_MAX_WORDS).join(", ") + (more > 0 ? " dan " + more + " lainnya" : "");
+    el.reportForm.hidden = !pending;
+    el.reportStatus.className = "report__status" + (pending ? "" : " report__status--ok");
+    el.reportStatus.textContent = pending ? "" : "Terima kasih sudah membantu melengkapi kamus!";
+    if (pending) {
+      el.reportNoteLabel.textContent = LABELS[dir].note;
+      el.reportNote.placeholder = "Contoh: " + shown[0] + " = ...";
+    }
+  }
+
+  function postReport(payload) {
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, REPORT_TIMEOUT_MS);
+    return fetch(REPORT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        var rejected = data && (data.success === false || data.success === "false");
+        if (!res.ok || rejected) throw new Error("laporan ditolak");
+      });
+    }).finally(function () { clearTimeout(timer); });
+  }
+
+  function sendReport() {
+    if (reportBusy) return;
+    var text = el.input.value.trim();
+    var batch = missingWords(translate(text)).filter(function (m) { return !m.sent; }).slice(0, REPORT_MAX_WORDS);
+    if (!batch.length) return;
+
+    var words = batch.map(function (m) { return m.word; });
+    var note = el.reportNote.value.trim();
+    var payload = {
+      _subject: "[PASSAPU] Kata belum ada: " + words.slice(0, 3).join(", ") +
+        (words.length > 3 ? " dan " + (words.length - 3) + " lainnya" : ""),
+      _template: "table",
+      kata: words.join(", "),
+      arah: LABELS[dir].route,
+      kalimat: text.slice(0, 300),
+      arti_dari_pengguna: note || "(tidak diisi)",
+      format_kamus: words.map(dictLine).join("\n")
+    };
+
+    reportBusy = true;
+    el.btnReport.disabled = true;
+    el.reportStatus.className = "report__status";
+    el.reportStatus.textContent = "Mengirim laporan...";
+
+    postReport(payload).then(function () {
+      state.reported = batch.map(function (m) { return m.key; }).concat(state.reported).slice(0, REPORT_KEPT);
+      saveState();
+      el.reportNote.value = "";
+      reportBusy = false;
+      el.btnReport.disabled = false;
+      run(false);
+    }, function () {
+      reportBusy = false;
+      el.btnReport.disabled = false;
+      el.reportStatus.className = "report__status report__status--err";
+      el.reportStatus.textContent = "Gagal mengirim. Periksa koneksi internet lalu coba lagi.";
+    });
+  }
+
   function joinParts(r) {
     return r.parts.map(function (p) { return p.text; }).join("");
   }
@@ -237,6 +348,7 @@
     lastOutput = joinParts(r);
     renderResult(r, has);
     renderBreakdown(r.pairs);
+    renderReport(r, has);
 
     if (has && record) {
       var total = r.known + r.unknown;
@@ -265,6 +377,11 @@
   });
 
   el.btnTranslate.addEventListener("click", function () { run(true); });
+
+  el.btnReport.addEventListener("click", sendReport);
+  el.reportNote.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); sendReport(); }
+  });
 
   // Tampilkan peta Google tertanam bila assets/kajang.png belum ada.
   var mapImg = $("mapImg");
