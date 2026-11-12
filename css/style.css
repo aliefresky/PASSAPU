@@ -206,29 +206,6 @@ button, textarea { font: inherit; color: inherit; }
 .about code { background: var(--card-soft); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
 .unk { color: var(--coral); border-bottom: 1px dashed var(--coral); }
 
-/* Laporan kata yang belum ada di kamus */
-.report {
-  margin-top: 12px; padding: 14px 16px;
-  background: var(--card-soft); border: 1px dashed var(--coral); border-radius: 14px;
-}
-.report__title { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
-.report__words { margin-top: 4px; font-size: 16px; font-weight: 700; color: var(--coral); word-break: break-word; }
-.report__hint { margin-top: 8px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-.report__label { display: block; margin-top: 12px; font-size: 12px; font-weight: 700; }
-.report__note {
-  margin-top: 6px; width: 100%; padding: 11px 12px;
-  font: inherit; font-size: 14px; color: inherit;
-  background: #fff; border: 1px solid #cfcbc1; border-radius: 10px; outline: 0;
-}
-.report__note::placeholder { color: #8d8f94; }
-.report__note:focus { border-color: var(--ink); }
-.report__send { width: 100%; justify-content: center; margin-top: 12px; padding: 13px 18px; }
-.report__send svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.report__status { margin-top: 10px; font-size: 12px; line-height: 1.4; color: var(--muted); }
-.report__status:empty { display: none; }
-.report__status--ok { color: #2f7d4f; font-weight: 700; }
-.report__status--err { color: #c0392b; font-weight: 700; }
-
 /* Daftar */
 .list { list-style: none; margin-top: 8px; max-height: 240px; overflow-y: auto; }
 .list li { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
